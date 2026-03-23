@@ -362,7 +362,7 @@ input[type=checkbox]{accent-color:var(--cornflower);width:15px;height:15px;curso
       <div class="page-crumb" id="topbar-crumb">Build your campaign structure for <span id="week-label"></span></div>
     </div>
     <div class="topbar-right">
-      <div class="chip teal">⚡ Meta v20.0</div>
+      <div class="chip teal">⚡ Meta v25.0</div>
       <div class="chip" id="ad-count-chip">0 ads staged</div>
     </div>
   </div>
@@ -1015,27 +1015,31 @@ function renderTable(){
     return a.funnel===f;
   });
   const body=document.getElementById('table-body');
+  if(!body) return;
   body.innerHTML=filtered.length===0
     ? `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);font-size:13px">No ads match this filter</td></tr>`
     : filtered.map(ad=>{
-      const icon=CREATIVES_ICONS[ad.id.split('_')[1]%5];
-      const nameShort=ad.adName.length>36?ad.adName.substring(0,36)+'…':ad.adName;
+      const iconIdx = parseInt((ad.id||'').replace(/\D/g,''))||0;
+      const icon = CREATIVES_ICONS[iconIdx % CREATIVES_ICONS.length] || '🖼️';
+      const nameShort = (ad.adName||'').length>36 ? (ad.adName||'').substring(0,36)+'…' : (ad.adName||'—');
+      const placementLabel = (ad.placement||'Advantage+').split('(')[0].trim();
+      const statusLabels = {pending:'⏳ Pending', approved:'✓ Approved', rejected:'✕ Rejected'};
       return `<tr>
         <td><input type="checkbox" ${ad.checked?'checked':''} onchange="toggleCheck('${ad.id}',this)"/></td>
         <td>
           <div class="ad-cell-creative">
             <div class="creative-icon">${icon}</div>
             <div>
-              <div class="ad-name-main" title="${ad.adName}">${nameShort}</div>
+              <div class="ad-name-main" title="${ad.adName||''}">${nameShort}</div>
               <div class="ad-name-copy">${ad.headline||'—'}</div>
             </div>
           </div>
         </td>
-        <td><span class="badge ${BADGE_FUNNEL[ad.funnel]}">${FUNNEL_LABELS[ad.funnel]}</span></td>
-        <td>${FLAGS[ad.market]||''} ${ad.market}</td>
-        <td style="font-size:12px;color:var(--text-secondary)">${ad.audience}</td>
-        <td style="font-size:11px;color:var(--text-muted)">${ad.placement.split('(')[0].trim()}</td>
-        <td><span class="badge badge-${ad.status}">${{pending:'⏳ Pending',approved:'✓ Approved',rejected:'✕ Rejected'}[ad.status]}</span></td>
+        <td><span class="badge ${BADGE_FUNNEL[ad.funnel]||'badge-upper'}">${FUNNEL_LABELS[ad.funnel]||ad.funnel||'—'}</span></td>
+        <td>${FLAGS[ad.market]||''} ${ad.market||'—'}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${ad.audience||'—'}</td>
+        <td style="font-size:11px;color:var(--text-muted)">${placementLabel}</td>
+        <td><span class="badge badge-${ad.status||'pending'}">${statusLabels[ad.status]||ad.status||'—'}</span></td>
         <td>
           <div class="flex gap-8">
             <button class="btn btn-xs btn-approve" onclick="setStatus('${ad.id}','approved')">✓</button>
@@ -1045,7 +1049,8 @@ function renderTable(){
       </tr>`;
     }).join('');
 
-  document.getElementById('sel-count').textContent=S.ads.filter(a=>a.checked).length;
+  const selEl = document.getElementById('sel-count');
+  if(selEl) selEl.textContent = S.ads.filter(a=>a.checked).length;
 }
 
 function setStatus(id,status){S.ads.find(a=>a.id===id).status=status;renderPreview();}
