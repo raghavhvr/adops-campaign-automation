@@ -1,0 +1,16 @@
+{
+  "name": "wpp-campaign-agent",
+  "version": "1.0.0",
+  "description": "WPP Media AdOps — Meta Campaign Trafficking Agent",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}

@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Campaign Agent — WPP Media AdOps</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* WPP Media Brand Colors */
+  --navy:#000050;
+  --navy-80:#1a1a6e;
+  --navy-60:#33338b;
+  --lime:#B0F467;
+  --lime-80:#c4f785;
+  --lime-dim:rgba(176,244,103,0.15);
+  --teal:#93DFE3;
+  --teal-dim:rgba(147,223,227,0.15);
+  --white:#FFFFFF;
+  /* Secondary */
+  --cornflower:#5465FF;
+  --periwinkle:#788BFF;
+  --teal2:#00DBEE;
+  --yellow:#FCFE67;
+  /* UI */
+  --bg:#f7f8fc;
+  --surface:#ffffff;
+  --border:#e4e6f0;
+  --border2:#d0d3e8;
+  --text-primary:#000050;
+  --text-secondary:#4a4a7a;
+  --text-muted:#8888b0;
+  --font:'Plus Jakarta Sans',sans-serif;
+  --radius:10px;
+  --radius-lg:16px;
+  --radius-xl:24px;
+  --shadow:0 2px 12px rgba(0,0,80,0.07);
+  --shadow-md:0 4px 24px rgba(0,0,80,0.1);
+}
+
+body{background:var(--bg);color:var(--text-primary);font-family:var(--font);font-size:14px;min-height:100vh;overflow-x:hidden}
+
+/* ── LAYOUT ── */
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--navy);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden}
+
+/* Gradient orb top */
+.sidebar-orb{position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(176,244,103,0.3) 0%,rgba(0,219,238,0.2) 50%,transparent 70%);border-radius:50%;pointer-events:none}
+
+.sidebar-inner{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;padding:0}
+
+.logo-area{padding:28px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo-wordmark{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px}
+.logo-name{display:flex;align-items:center;gap:10px}
+.logo-dot-grid{display:grid;grid-template-columns:repeat(4,5px);gap:2px}
+.logo-dot{width:5px;height:5px;border-radius:50%;background:var(--lime)}
+.logo-dot:nth-child(odd){opacity:0.5}
+.logo-text{font-size:20px;font-weight:800;color:var(--white);letter-spacing:-0.5px}
+.logo-badge{margin-top:8px;display:inline-flex;align-items:center;gap:5px;background:rgba(176,244,103,0.1);border:1px solid rgba(176,244,103,0.2);border-radius:20px;padding:4px 10px}
+.logo-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 6px var(--lime)}
+.logo-badge-text{font-size:10px;font-weight:600;color:var(--lime);letter-spacing:0.5px}
+
+.nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav-section-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:12px 12px 6px;margin-top:4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.18s;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;border:none;background:none;width:100%;text-align:left;position:relative}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85)}
+.nav-item.active{background:rgba(176,244,103,0.12);color:var(--lime)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--lime);border-radius:0 3px 3px 0}
+.nav-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--lime);color:var(--navy);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+
+.sidebar-footer{padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08)}
+.meta-status{display:flex;align-items:center;gap:8px}
+.meta-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;flex-shrink:0}
+.meta-info{flex:1;min-width:0}
+.meta-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.7)}
+.meta-acct{font-size:10px;color:rgba(255,255,255,0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar-left{}
+.page-title{font-size:16px;font-weight:700;color:var(--navy);letter-spacing:-0.2px}
+.page-crumb{font-size:11px;color:var(--text-muted);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--bg);color:var(--text-muted)}
+.chip.lime{background:var(--lime-dim);border-color:rgba(176,244,103,0.4);color:#3d6600}
+.chip.teal{background:var(--teal-dim);border-color:rgba(147,223,227,0.4);color:#005a5e}
+
+/* ── CONTENT ── */
+.content{padding:28px 32px;max-width:1100px}
+
+/* ── STEP TABS ── */
+.step-tabs{display:flex;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:5px;gap:4px;margin-bottom:28px;width:fit-content}
+.step-tab{display:flex;align-items:center;gap:8px;padding:9px 20px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);transition:all 0.18s;border:none;background:none;white-space:nowrap}
+.step-tab:hover{color:var(--text-secondary)}
+.step-tab.active{background:var(--navy);color:var(--lime)}
+.step-tab.done{color:var(--text-primary)}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-muted);flex-shrink:0}
+.step-tab.active .step-num{background:var(--lime);color:var(--navy)}
+.step-tab.done .step-num{background:var(--lime-dim);color:#3d6600;font-size:11px}
+
+/* ── SECTION CARD ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.card-header{margin-bottom:20px}
+.card-title{font-size:14px;font-weight:700;color:var(--navy)}
+.card-sub{font-size:12px;color:var(--text-muted);margin-top:3px}
+.card-divider{height:1px;background:var(--border);margin:20px 0}
+
+/* ── FORM ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px}
+.field input,.field select,.field textarea{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--navy);font-family:var(--font);font-size:13px;font-weight:500;outline:none;transition:all 0.18s;resize:none;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cornflower);background:var(--white);box-shadow:0 0 0 3px rgba(84,101,255,0.1)}
+.field select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238888b0' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.helper{font-size:11px;color:var(--text-muted);margin-top:3px}
+.field-full{grid-column:span 2}
+
+/* ── MATRIX ── */
+.matrix-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.matrix-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.matrix-cell{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 10px;cursor:pointer;transition:all 0.18s;text-align:center;user-select:none}
+.matrix-cell:hover{border-color:var(--border2)}
+.matrix-cell.selected{background:#f0f4ff;border-color:var(--cornflower);box-shadow:0 0 0 3px rgba(84,101,255,0.08)}
+.matrix-cell-flag{font-size:20px;margin-bottom:4px}
+.matrix-cell-name{font-size:11px;font-weight:600;color:var(--text-secondary)}
+.matrix-cell.selected .matrix-cell-name{color:var(--cornflower)}
+.matrix-cell-check{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border);margin:4px auto 0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:all 0.18s}
+.matrix-cell.selected .matrix-cell-check{background:var(--cornflower);border-color:var(--cornflower);color:white}
+
+/* Funnel matrix cells */
+.funnel-cell{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.18s;user-select:none}
+.funnel-cell:hover{border-color:var(--border2)}
+.funnel-cell.selected{background:#f5fbff;border-color:var(--teal);box-shadow:0 0 0 3px rgba(147,223,227,0.2)}
+.funnel-cell-icon{font-size:22px;margin-bottom:6px}
+.funnel-cell-name{font-size:13px;font-weight:700;color:var(--navy)}
+.funnel-cell-desc{font-size:11px;color:var(--text-muted);margin-top:2px}
+.funnel-cell.selected .funnel-cell-name{color:#005a5e}
+
+/* ── TAGS ── */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px;min-height:46px;cursor:text;transition:all 0.18s}
+.tags-wrap:focus-within{border-color:var(--cornflower);background:var(--white);box-shadow:0 0 0 3px rgba(84,101,255,0.1)}
+.tag{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border2);color:var(--navy);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.tag-x{cursor:pointer;color:var(--text-muted);font-size:13px;line-height:1;transition:color 0.1s}
+.tag-x:hover{color:var(--navy)}
+.tags-input{border:none;background:none;outline:none;color:var(--navy);font-size:13px;font-family:var(--font);flex:1;min-width:80px;padding:0 4px;font-weight:500}
+
+/* ── CREATIVE ROWS ── */
+.creative-row{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;transition:border-color 0.18s}
+.creative-row:hover{border-color:var(--border2)}
+.creative-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.funnel-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.pill-upper{background:rgba(84,101,255,0.1);color:var(--cornflower);border:1px solid rgba(84,101,255,0.2)}
+.pill-mid{background:rgba(0,219,238,0.1);color:#007a82;border:1px solid rgba(0,219,238,0.2)}
+.pill-lower{background:var(--lime-dim);color:#3d6600;border:1px solid rgba(176,244,103,0.3)}
+
+/* ── COPY SECTION ── */
+.copy-block{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.copy-block-header{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.copy-block-body{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.copy-block-body .field-full{grid-column:span 2}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;transition:all 0.18s}
+.btn-primary{background:var(--navy);color:var(--lime)}
+.btn-primary:hover{background:var(--navy-80)}
+.btn-lime{background:var(--lime);color:var(--navy)}
+.btn-lime:hover{background:var(--lime-80)}
+.btn-ghost{background:var(--white);color:var(--text-secondary);border:1.5px solid var(--border)}
+.btn-ghost:hover{border-color:var(--border2);color:var(--navy)}
+.btn-approve{background:rgba(34,197,94,0.1);color:#16a34a;border:1.5px solid rgba(34,197,94,0.2)}
+.btn-approve:hover{background:rgba(34,197,94,0.18)}
+.btn-reject{background:rgba(239,68,68,0.08);color:#dc2626;border:1.5px solid rgba(239,68,68,0.15)}
+.btn-reject:hover{background:rgba(239,68,68,0.15)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-xs{padding:4px 10px;font-size:11px;border-radius:6px}
+.spinner{width:14px;height:14px;border:2px solid rgba(176,244,103,0.3);border-top-color:var(--lime);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── PREVIEW TABLE ── */
+.summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow)}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:6px}
+.stat-value{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-1px}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:3px}
+
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.filter-btn{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;transition:all 0.18s}
+.filter-btn:hover{border-color:var(--border2);color:var(--text-secondary)}
+.filter-btn.active{background:var(--navy);border-color:var(--navy);color:var(--lime)}
+
+.bulk-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--navy);border-radius:10px;margin-bottom:12px}
+.bulk-info{font-size:12px;font-weight:600;color:rgba(255,255,255,0.7)}
+.bulk-info span{color:var(--lime)}
+.bulk-actions{display:flex;gap:8px}
+
+.table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
+.ad-table{width:100%;border-collapse:collapse}
+.ad-table th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--bg);border-bottom:1px solid var(--border)}
+.ad-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;color:var(--text-primary)}
+.ad-table tr:last-child td{border-bottom:none}
+.ad-table tr:hover td{background:#fafbff}
+
+.ad-name-main{font-weight:600;color:var(--navy);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.ad-name-copy{font-size:11px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.creative-icon{width:38px;height:38px;border-radius:8px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ad-cell-creative{display:flex;align-items:center;gap:10px}
+
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;white-space:nowrap}
+.badge-upper{background:rgba(84,101,255,0.1);color:var(--cornflower)}
+.badge-mid{background:rgba(0,219,238,0.08);color:#007a82}
+.badge-lower{background:var(--lime-dim);color:#3d6600}
+.badge-pending{background:rgba(245,158,11,0.1);color:#b45309}
+.badge-approved{background:rgba(34,197,94,0.1);color:#16a34a}
+.badge-rejected{background:rgba(239,68,68,0.08);color:#dc2626}
+
+/* ── PUSH SCREEN ── */
+.push-hero{text-align:center;padding:40px 0 32px}
+.push-hero-title{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-0.5px;margin-bottom:6px}
+.push-hero-sub{font-size:13px;color:var(--text-muted)}
+.progress-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.progress-label{font-size:12px;font-weight:600;color:var(--navy)}
+.progress-pct{font-size:12px;font-weight:700;color:var(--cornflower)}
+.progress-track{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cornflower),var(--teal2),var(--lime));border-radius:4px;transition:width 0.5s ease}
+.push-log{background:var(--navy);border-radius:var(--radius-lg);padding:20px;font-family:'Courier New',monospace;font-size:12px;max-height:300px;overflow-y:auto;margin-bottom:16px}
+.log-line{padding:4px 0;display:flex;gap:14px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.log-line:last-child{border-bottom:none}
+.log-ts{color:rgba(255,255,255,0.25);min-width:58px;flex-shrink:0}
+.log-ok{color:var(--lime)}
+.log-err{color:#fca5a5}
+.log-info{color:var(--teal)}
+.result-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+.result-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;text-align:center;box-shadow:var(--shadow)}
+.result-num{font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+.result-num.green{color:#16a34a}
+.result-num.amber{color:#b45309}
+.result-num.blue{color:var(--cornflower)}
+.result-lbl{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px}
+
+/* ── HISTORY ── */
+.history-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border)}
+.history-row:last-child{border-bottom:none}
+.history-id{font-size:11px;font-weight:700;color:var(--cornflower);font-family:'Courier New',monospace}
+.history-meta{font-size:13px;font-weight:600;color:var(--navy);margin-top:2px}
+.history-date{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+/* ── SETTINGS ── */
+.settings-api-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(0,0,80,0.03);border-radius:10px;margin-bottom:20px;border:1px solid var(--border)}
+.settings-api-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.settings-api-title{font-size:13px;font-weight:700;color:var(--navy)}
+.settings-api-sub{font-size:11px;color:var(--text-muted)}
+
+/* ── NAMING PREVIEW ── */
+.naming-preview{background:var(--navy);border-radius:10px;padding:16px;margin-top:16px}
+.naming-preview-label{font-size:10px;font-weight:700;letter-spacing:0.8px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px}
+.naming-example{font-family:'Courier New',monospace;font-size:11px;padding:6px 10px;background:rgba(176,244,103,0.08);border-radius:6px;color:var(--lime);margin-bottom:4px}
+
+/* ── MISC ── */
+.screen{display:none}
+.screen.active{display:block}
+.flex{display:flex}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.gap-8{gap:8px}
+.gap-12{gap:12px}
+.mt-4{margin-top:16px}
+.text-muted{color:var(--text-muted)}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-muted)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--text-muted)}
+
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeSlide 0.25s ease}
+
+input[type=checkbox]{accent-color:var(--cornflower);width:15px;height:15px;cursor:pointer}
+
+/* Gradient header bar */
+.gradient-bar{height:3px;background:linear-gradient(90deg,var(--cornflower),var(--teal2),var(--lime));border-radius:0}
+
+/* Tooltip */
+.tooltip-wrap{position:relative;display:inline-flex}
+.tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--navy);color:rgba(255,255,255,0.85);font-size:10px;padding:5px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.15s}
+.tooltip-wrap:hover .tooltip{opacity:1}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="gradient-bar"></div>
+  <div class="sidebar-orb"></div>
+  <div class="sidebar-inner">
+
+    <div class="logo-area">
+      <div class="logo-wordmark">WPP Media</div>
+      <div class="logo-name">
+        <div class="logo-dot-grid" id="logo-dots"></div>
+        <div class="logo-text">AdOps</div>
+      </div>
+      <div class="logo-badge">
+        <span class="logo-badge-dot"></span>
+        <span class="logo-badge-text">Campaign Agent</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section-label">Workflow</div>
+      <button class="nav-item active" onclick="goTo('brief')">
+        <span class="nav-icon">📋</span> Weekly Brief
+      </button>
+      <button class="nav-item" onclick="goTo('preview')" id="nav-preview">
+        <span class="nav-icon">🔍</span> Preview & Approve
+        <span class="nav-badge" id="pending-badge" style="display:none">0</span>
+      </button>
+      <button class="nav-item" onclick="goTo('push')" id="nav-push">
+        <span class="nav-icon">🚀</span> Push to Meta
+      </button>
+
+      <div class="nav-section-label">Records</div>
+      <button class="nav-item" onclick="goTo('history')">
+        <span class="nav-icon">📂</span> Push History
+      </button>
+      <button class="nav-item" onclick="goTo('settings')">
+        <span class="nav-icon">⚙️</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="meta-status">
+        <div class="meta-dot"></div>
+        <div class="meta-info">
+          <div class="meta-label">Meta API Connected</div>
+          <div class="meta-acct" id="acct-display">act_9876543210</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+  <div class="gradient-bar"></div>
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="topbar-title">Weekly Brief</div>
+      <div class="page-crumb" id="topbar-crumb">Build your campaign structure for <span id="week-label"></span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="chip teal">⚡ Meta v20.0</div>
+      <div class="chip" id="ad-count-chip">0 ads staged</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN 1: BRIEF
+    ═══════════════════════════════════════════ -->
+    <div class="screen active" id="screen-brief">
+      <div class="step-tabs">
+        <div class="step-tab active"><span class="step-num">1</span> Brief</div>
+        <div class="step-tab" id="st2"><span class="step-num">2</span> Preview & Approve</div>
+        <div class="step-tab" id="st3"><span class="step-num">3</span> Push to Meta</div>
+      </div>
+
+      <!-- Campaign basics -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Campaign details</div>
+          <div class="card-sub">Name this week's campaign and set the objective</div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Campaign name</label>
+            <input type="text" id="f-campaign-name" placeholder="e.g. W13_UAE_Ramadan_Awareness" value="W13_UAE_Ramadan_AllFunnel"/>
+          </div>
+          <div class="field">
+            <label>Campaign objective</label>
+            <select id="f-objective">
+              <option value="OUTCOME_AWARENESS">Awareness</option>
+              <option value="OUTCOME_TRAFFIC" selected>Traffic</option>
+              <option value="OUTCOME_LEADS">Lead Generation</option>
+              <option value="OUTCOME_SALES">Conversions / Sales</option>
+              <option value="OUTCOME_ENGAGEMENT">Engagement</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Start date</label>
+            <input type="date" id="f-start-date"/>
+          </div>
+          <div class="field">
+            <label>Bid strategy</label>
+            <select id="f-bid">
+              <option>LOWEST_COST_WITHOUT_CAP</option>
+              <option>LOWEST_COST_WITH_BID_CAP</option>
+              <option>COST_CAP</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Targeting Matrix -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Targeting matrix</div>
+          <div class="card-sub">Select markets and funnel stages — each combination becomes one ad set</div>
+        </div>
+
+        <div class="form-grid" style="align-items:start">
+          <div>
+            <div class="field" style="margin-bottom:10px"><label>Markets</label></div>
+            <div class="matrix-grid" id="market-matrix">
+              <div class="matrix-cell selected" data-group="market" data-val="UAE" onclick="toggleMatrix(this)">
+                <div class="matrix-cell-flag">🇦🇪</div>
+                <div class="matrix-cell-name">UAE</div>
+                <div class="matrix-cell-check">✓</div>
+              </div>
+              <div class="matrix-cell selected" data-group="market" data-val="US" onclick="toggleMatrix(this)">
+                <div class="matrix-cell-flag">🇺🇸</div>
+                <div class="matrix-cell-name">US</div>
+                <div class="matrix-cell-check">✓</div>
+              </div>
+              <div class="matrix-cell" data-group="market" data-val="UK" onclick="toggleMatrix(this)">
+                <div class="matrix-cell-flag">🇬🇧</div>
+                <div class="matrix-cell-name">UK</div>
+                <div class="matrix-cell-check">✓</div>
+              </div>
+              <div class="matrix-cell" data-group="market" data-val="EU" onclick="toggleMatrix(this)">
+                <div class="matrix-cell-flag">🇪🇺</div>
+                <div class="matrix-cell-name">EU</div>
+                <div class="matrix-cell-check">✓</div>
+              </div>
+              <div class="matrix-cell" data-group="market" data-val="IN" onclick="toggleMatrix(this)">
+                <div class="matrix-cell-flag">🇮🇳</div>
+                <div class="matrix-cell-name">India</div>
+                <div class="matrix-cell-check">✓</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="field" style="margin-bottom:10px"><label>Funnel stages</label></div>
+            <div class="matrix-grid-3">
+              <div class="funnel-cell selected" data-group="funnel" data-val="Upper" onclick="toggleFunnel(this)">
+                <div class="funnel-cell-icon">🔼</div>
+                <div class="funnel-cell-name">Upper</div>
+                <div class="funnel-cell-desc">Awareness</div>
+              </div>
+              <div class="funnel-cell selected" data-group="funnel" data-val="Mid" onclick="toggleFunnel(this)">
+                <div class="funnel-cell-icon">➡️</div>
+                <div class="funnel-cell-name">Mid</div>
+                <div class="funnel-cell-desc">Consideration</div>
+              </div>
+              <div class="funnel-cell selected" data-group="funnel" data-val="Lower" onclick="toggleFunnel(this)">
+                <div class="funnel-cell-icon">🔽</div>
+                <div class="funnel-cell-name">Lower</div>
+                <div class="funnel-cell-desc">Conversion</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div class="field">
+          <label>Audience segments <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted)">— type and press Enter to add</span></label>
+          <div class="tags-wrap" id="audience-wrap" onclick="document.getElementById('aud-input').focus()">
+            <span class="tag">25–34 Women <span class="tag-x" onclick="removeTag(this,event)">×</span></span>
+            <span class="tag">HNI Investors <span class="tag-x" onclick="removeTag(this,event)">×</span></span>
+            <span class="tag">Expats <span class="tag-x" onclick="removeTag(this,event)">×</span></span>
+            <input class="tags-input" id="aud-input" placeholder="Add segment…" onkeydown="addTag(event)"/>
+          </div>
+          <div class="helper">Each segment × market × funnel stage = 1 ad set</div>
+        </div>
+
+        <div style="margin-top:16px;padding:12px 14px;background:#f0f4ff;border-radius:8px;border:1px solid rgba(84,101,255,0.15)">
+          <span style="font-size:12px;font-weight:600;color:var(--cornflower)">📊 </span>
+          <span style="font-size:12px;color:var(--text-secondary)">This will generate <strong id="combo-count" style="color:var(--navy)">0</strong> ad sets</span>
+        </div>
+      </div>
+
+      <!-- Creatives -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Creative assets</div>
+          <div class="card-sub">Assign your existing creative files per funnel stage. Budget is set directly in Meta Ads Manager.</div>
+        </div>
+        <div id="creative-rows"></div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:4px" onclick="addCreativeRow()">+ Add creative</button>
+      </div>
+
+      <!-- Ad Copy -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Ad copy per funnel</div>
+          <div class="card-sub">Write headline, body, and CTA for each funnel stage</div>
+        </div>
+        <div id="copy-rows"></div>
+      </div>
+
+      <!-- Placement & Destination -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Placement & destination</div>
+          <div class="card-sub">Where these ads will appear and where traffic is sent</div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Placement type</label>
+            <select id="f-placement">
+              <option>Advantage+ (recommended)</option>
+              <option>Feed only</option>
+              <option>Stories + Reels</option>
+              <option>Manual — all placements</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Destination URL</label>
+            <input type="url" id="f-url" placeholder="https://…" value="https://brand.com/ramadan"/>
+          </div>
+          <div class="field">
+            <label>UTM source</label>
+            <input type="text" id="f-utm" placeholder="meta_paid" value="meta_paid"/>
+          </div>
+          <div class="field">
+            <label>Meta Pixel ID</label>
+            <input type="text" id="f-pixel" placeholder="1234567890" value="9876543210"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-8 mt-4 items-center">
+        <button class="btn btn-primary" onclick="buildCampaign()">
+          <span id="build-spinner" style="display:none" class="spinner"></span>
+          <span id="build-text">Build campaign structure →</span>
+        </button>
+        <button class="btn btn-ghost" onclick="if(confirm('Reset brief?'))location.reload()">Reset</button>
+        <div style="margin-left:auto;font-size:11px;color:var(--text-muted)">Budget is set directly in Meta Ads Manager after push</div>
+      </div>
+    </div>
+    <!-- /screen-brief -->
+
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN 2: PREVIEW
+    ═══════════════════════════════════════════ -->
+    <div class="screen" id="screen-preview">
+      <div class="step-tabs">
+        <div class="step-tab done"><span class="step-num">✓</span> Brief</div>
+        <div class="step-tab active"><span class="step-num">2</span> Preview & Approve</div>
+        <div class="step-tab" id="st3b"><span class="step-num">3</span> Push to Meta</div>
+      </div>
+
+      <div class="summary-row" id="summary-row"></div>
+
+      <div class="bulk-bar">
+        <div class="bulk-info"><span id="sel-count">0</span> selected</div>
+        <div class="bulk-actions">
+          <button class="btn btn-xs" style="background:rgba(176,244,103,0.15);color:#3d6600;border:1.5px solid rgba(176,244,103,0.3)" onclick="bulkApprove()">✓ Approve selected</button>
+          <button class="btn btn-xs btn-reject" onclick="bulkReject()">✕ Reject selected</button>
+          <button class="btn btn-xs btn-ghost" onclick="selectAll()">Select all</button>
+          <button class="btn btn-xs btn-ghost" onclick="deselectAll()">Deselect all</button>
+        </div>
+      </div>
+
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn active" data-f="all" onclick="setFilter(this,'all')">All</button>
+        <button class="filter-btn" data-f="pending" onclick="setFilter(this,'pending')">⏳ Pending</button>
+        <button class="filter-btn" data-f="approved" onclick="setFilter(this,'approved')">✓ Approved</button>
+        <button class="filter-btn" data-f="rejected" onclick="setFilter(this,'rejected')">✕ Rejected</button>
+        <button class="filter-btn" data-f="Upper" onclick="setFilter(this,'Upper')">🔼 Upper</button>
+        <button class="filter-btn" data-f="Mid" onclick="setFilter(this,'Mid')">➡️ Mid</button>
+        <button class="filter-btn" data-f="Lower" onclick="setFilter(this,'Lower')">🔽 Lower</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ad-table">
+          <thead>
+            <tr>
+              <th style="width:36px"><input type="checkbox" id="check-all" onchange="toggleAllChecks(this)"/></th>
+              <th>Ad / Creative</th>
+              <th>Funnel</th>
+              <th>Market</th>
+              <th>Audience</th>
+              <th>Placement</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="flex gap-8 mt-4 items-center justify-between">
+        <button class="btn btn-ghost" onclick="goTo('brief')">← Edit brief</button>
+        <button class="btn btn-lime" onclick="proceedToPush()">Push approved ads to Meta →</button>
+      </div>
+    </div>
+    <!-- /screen-preview -->
+
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN 3: PUSH
+    ═══════════════════════════════════════════ -->
+    <div class="screen" id="screen-push">
+      <div class="push-hero">
+        <div class="push-hero-title" id="push-title">Pushing to Meta…</div>
+        <div class="push-hero-sub" id="push-sub">Creating campaigns, ad sets and ads via Marketing API</div>
+      </div>
+
+      <div id="result-grid" style="display:none" class="result-grid"></div>
+
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-label" id="prog-label">Initialising…</span>
+          <span class="progress-pct" id="prog-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="push-log" id="push-log"></div>
+
+      <div id="push-done-btns" style="display:none" class="flex gap-8 mt-4 items-center justify-center">
+        <button class="btn btn-ghost" onclick="goTo('brief')">+ New weekly brief</button>
+        <a class="btn btn-lime" href="https://business.facebook.com/adsmanager" target="_blank">Open Ads Manager ↗</a>
+      </div>
+    </div>
+    <!-- /screen-push -->
+
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN: HISTORY
+    ═══════════════════════════════════════════ -->
+    <div class="screen" id="screen-history">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Push history</div>
+          <div class="card-sub">All previous Meta pushes from this tool</div>
+        </div>
+        <div id="history-list"></div>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════
+         SCREEN: SETTINGS
+    ═══════════════════════════════════════════ -->
+    <div class="screen" id="screen-settings">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Meta API credentials</div>
+          <div class="card-sub">These are stored in your browser and never sent externally in production, this would live in Vercel environment variables</div>
+        </div>
+        <div class="settings-api-header">
+          <div class="settings-api-icon">🔗</div>
+          <div>
+            <div class="settings-api-title">Meta Marketing API</div>
+            <div class="settings-api-sub">Requires a System User token with Ads Manager access</div>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Ad Account ID</label>
+            <input type="text" id="s-acct" placeholder="act_1234567890" value="act_9876543210"/>
+          </div>
+          <div class="field">
+            <label>Access Token</label>
+            <input type="password" id="s-token" placeholder="EAAxxxxx…" value="EAAxxxxxxxxxxxxxxx"/>
+          </div>
+          <div class="field">
+            <label>Business Manager ID</label>
+            <input type="text" id="s-bm" placeholder="123456789" value="1122334455"/>
+          </div>
+          <div class="field">
+            <label>API Version</label>
+            <select id="s-ver">
+              <option>v21.0</option>
+              <option selected>v20.0</option>
+              <option>v19.0</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:20px" onclick="saveSettings()">Save credentials</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Naming convention</div>
+          <div class="card-sub">Auto-applied to all campaigns, ad sets and ads on push</div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Campaign pattern</label>
+            <input type="text" id="nc-camp" value="{{WEEK}}_{{MARKET}}_{{OBJECTIVE}}"/>
+          </div>
+          <div class="field">
+            <label>Ad set pattern</label>
+            <input type="text" id="nc-adset" value="{{WEEK}}_{{MARKET}}_{{FUNNEL}}_{{AUDIENCE}}"/>
+          </div>
+          <div class="field field-full">
+            <label>Ad pattern</label>
+            <input type="text" id="nc-ad" value="{{WEEK}}_{{MARKET}}_{{FUNNEL}}_{{AUDIENCE}}_{{CREATIVE_ID}}"/>
+          </div>
+        </div>
+        <div class="naming-preview">
+          <div class="naming-preview-label">Example output</div>
+          <div class="naming-example">W13_UAE_OUTCOME_TRAFFIC</div>
+          <div class="naming-example">W13_UAE_Upper_HNI_Investors</div>
+          <div class="naming-example">W13_UAE_Upper_HNI_Investors_Brand_Hero_V1</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+</div><!-- /shell -->
+
+<script>
+// ─── State ─────────────────────────────────────────────────────
+const S = {
+  ads: [],
+  filter: 'all',
+  history: [],
+  config: { acct:'act_9876543210', token:'EAAxxxxxxxxxxxxxxx', bm:'1122334455', ver:'v20.0' }
+};
+
+const FLAGS = {UAE:'🇦🇪',US:'🇺🇸',UK:'🇬🇧',EU:'🇪🇺',IN:'🇮🇳'};
+const FUNNEL_LABELS = {Upper:'🔼 Upper',Mid:'➡️ Mid',Lower:'🔽 Lower'};
+const FUNNEL_PILL = {Upper:'pill-upper',Mid:'pill-mid',Lower:'pill-lower'};
+const BADGE_FUNNEL = {Upper:'badge-upper',Mid:'badge-mid',Lower:'badge-lower'};
+const CREATIVES_ICONS = ['🖼️','🎬','📸','🎥','📱'];
+
+// ─── Init ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Logo dots
+  const grid = document.getElementById('logo-dots');
+  for(let i=0;i<12;i++){const d=document.createElement('div');d.className='logo-dot';grid.appendChild(d);}
+
+  // Week label
+  document.getElementById('week-label').textContent = weekLabel();
+  document.getElementById('f-start-date').value = nextMonday();
+
+  initCreatives();
+  initCopy();
+  updateComboCount();
+});
+
+function weekLabel(){
+  const d=new Date(),mon=new Date(d);
+  mon.setDate(d.getDate()-d.getDay()+1);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  const fmt=dt=>dt.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  return fmt(mon)+' – '+fmt(sun)+', '+sun.getFullYear();
+}
+function nextMonday(){
+  const d=new Date(),day=d.getDay();
+  d.setDate(d.getDate()+(day===0?1:8-day));
+  return d.toISOString().split('T')[0];
+}
+function weekNum(){
+  const d=new Date(),s=new Date(d.getFullYear(),0,1);
+  return Math.ceil(((d-s)/86400000+s.getDay()+1)/7);
+}
+
+// ─── Navigation ────────────────────────────────────────────────
+const TITLES = {
+  brief:   ['Weekly Brief','Build your campaign structure for '],
+  preview: ['Preview & Approve','Review every ad before pushing to Meta'],
+  push:    ['Push to Meta','Live push via Meta Marketing API'],
+  history: ['Push History','All previous campaign pushes'],
+  settings:['Settings','Meta API credentials & naming conventions'],
+};
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active','fade-in');
+  const navMap={brief:0,preview:1,push:2,history:3,settings:4};
+  document.querySelectorAll('.nav-item')[navMap[id]||0].classList.add('active');
+  const [title, crumb] = TITLES[id];
+  document.getElementById('topbar-title').textContent=title;
+  document.getElementById('topbar-crumb').innerHTML = id==='brief'
+    ? crumb+'<span id="week-label">'+weekLabel()+'</span>'
+    : crumb;
+  if(id==='preview') renderPreview();
+  if(id==='history') renderHistory();
+}
+
+// ─── Matrix ────────────────────────────────────────────────────
+function toggleMatrix(el){
+  el.classList.toggle('selected');
+  updateComboCount();
+}
+function toggleFunnel(el){
+  el.classList.toggle('selected');
+  updateComboCount();
+}
+function getSelected(group){
+  return [...document.querySelectorAll(`.matrix-cell.selected[data-group="${group}"]`)].map(e=>e.dataset.val);
+}
+function getFunnels(){
+  return [...document.querySelectorAll('.funnel-cell.selected')].map(e=>e.dataset.val);
+}
+function getAudiences(){
+  return [...document.querySelectorAll('#audience-wrap .tag')].map(t=>t.textContent.replace('×','').trim());
+}
+function updateComboCount(){
+  const m=getSelected('market'),f=getFunnels(),a=getAudiences();
+  const n=m.length*f.length*Math.max(a.length,1);
+  const el=document.getElementById('combo-count');
+  if(el) el.textContent=n;
+  document.getElementById('ad-count-chip').textContent=n+' ads staged';
+}
+
+// ─── Tags ──────────────────────────────────────────────────────
+function addTag(e){
+  if(e.key!=='Enter'&&e.key!==',') return;
+  e.preventDefault();
+  const inp=document.getElementById('aud-input');
+  const val=inp.value.trim().replace(/,$/,'');
+  if(!val) return;
+  const tag=document.createElement('span');
+  tag.className='tag';
+  tag.innerHTML=val+' <span class="tag-x" onclick="removeTag(this,event)">×</span>';
+  inp.before(tag);
+  inp.value='';
+  updateComboCount();
+}
+function removeTag(el,e){
+  if(e) e.stopPropagation();
+  el.closest('.tag').remove();
+  updateComboCount();
+}
+
+// ─── Creatives ─────────────────────────────────────────────────
+const DEFAULT_CREATIVES=[
+  {funnel:'Upper',name:'Brand_Hero_V1.mp4',url:'https://cdn.brand.com/upper/hero_v1.mp4'},
+  {funnel:'Mid',name:'Product_Carousel_V2.jpg',url:'https://cdn.brand.com/mid/carousel.jpg'},
+  {funnel:'Lower',name:'Offer_Static_V3.jpg',url:'https://cdn.brand.com/lower/offer_v3.jpg'},
+];
+function initCreatives(){
+  DEFAULT_CREATIVES.forEach(c=>addCreativeRow(c));
+}
+function addCreativeRow(data={}){
+  const cont=document.getElementById('creative-rows');
+  const row=document.createElement('div');
+  row.className='creative-row';
+  const f=data.funnel||'Upper';
+  const pillClass=FUNNEL_PILL[f];
+  row.innerHTML=`
+    <div class="creative-row-header">
+      <span class="funnel-pill ${pillClass}">${FUNNEL_LABELS[f]||f}</span>
+      <button class="btn btn-xs btn-ghost" onclick="this.closest('.creative-row').remove()">✕ Remove</button>
+    </div>
+    <div class="form-grid-3">
+      <div class="field">
+        <label>Funnel stage</label>
+        <select class="cr-funnel" onchange="updateCreativePill(this)">
+          <option ${f==='Upper'?'selected':''}>Upper</option>
+          <option ${f==='Mid'?'selected':''}>Mid</option>
+          <option ${f==='Lower'?'selected':''}>Lower</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Asset filename / ID</label>
+        <input type="text" class="cr-name" value="${data.name||''}" placeholder="banner_upper_v1.jpg"/>
+      </div>
+      <div class="field">
+        <label>Asset URL or hash</label>
+        <input type="text" class="cr-url" value="${data.url||''}" placeholder="https://cdn.…/asset.jpg"/>
+      </div>
+    </div>`;
+  cont.appendChild(row);
+}
+function updateCreativePill(sel){
+  const row=sel.closest('.creative-row');
+  const f=sel.value;
+  const pill=row.querySelector('.funnel-pill');
+  pill.className='funnel-pill '+FUNNEL_PILL[f];
+  pill.textContent=FUNNEL_LABELS[f]||f;
+}
+
+// ─── Copy rows ─────────────────────────────────────────────────
+const DEFAULT_COPY=[
+  {funnel:'Upper',headline:'Discover a new way to invest',body:'Join 50,000+ investors who trust us.',cta:'Learn More'},
+  {funnel:'Mid',headline:'Compare. Decide. Invest smarter.',body:'Transparent fees, real returns.',cta:'See Options'},
+  {funnel:'Lower',headline:'Exclusive Ramadan offer — limited time',body:'Open your account today, 0% fee for 3 months.',cta:'Start Now'},
+];
+function initCopy(){
+  const cont=document.getElementById('copy-rows');
+  cont.innerHTML='';
+  DEFAULT_COPY.forEach(c=>{
+    const b=document.createElement('div');
+    b.className='copy-block';
+    const pillClass=FUNNEL_PILL[c.funnel];
+    b.innerHTML=`
+      <div class="copy-block-header">
+        <span class="funnel-pill ${pillClass}">${FUNNEL_LABELS[c.funnel]}</span>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Copy for this funnel stage</span>
+      </div>
+      <div class="copy-block-body">
+        <div class="field">
+          <label>Headline <span style="text-transform:none;letter-spacing:0;font-weight:400">(max 40 chars)</span></label>
+          <input type="text" class="cp-hl" value="${c.headline}" maxlength="40"/>
+        </div>
+        <div class="field">
+          <label>CTA button</label>
+          <select class="cp-cta">
+            <option ${c.cta==='Learn More'?'selected':''}>Learn More</option>
+            <option ${c.cta==='See Options'?'selected':''}>See Options</option>
+            <option ${c.cta==='Start Now'?'selected':''}>Start Now</option>
+            <option>Shop Now</option><option>Sign Up</option>
+            <option>Contact Us</option><option>Download</option>
+          </select>
+        </div>
+        <div class="field field-full">
+          <label>Primary text</label>
+          <textarea class="cp-body" rows="2">${c.body}</textarea>
+        </div>
+      </div>`;
+    cont.appendChild(b);
+  });
+}
+
+// ─── Build campaign ────────────────────────────────────────────
+function buildCampaign(){
+  const markets=getSelected('market'),funnels=getFunnels(),audiences=getAudiences();
+  if(!markets.length||!funnels.length){alert('Select at least one market and one funnel stage.');return;}
+  const spin=document.getElementById('build-spinner'),txt=document.getElementById('build-text');
+  spin.style.display='inline-block';txt.textContent='Building…';
+
+  setTimeout(()=>{
+    // Collect creatives
+    const cMap={};
+    document.querySelectorAll('.creative-row').forEach(r=>{
+      const f=r.querySelector('.cr-funnel').value;
+      cMap[f]={name:r.querySelector('.cr-name').value,url:r.querySelector('.cr-url').value};
+    });
+    // Collect copy
+    const cpMap={};
+    const cpBlocks=[...document.getElementById('copy-rows').children];
+    const FL=['Upper','Mid','Lower'];
+    cpBlocks.forEach((b,i)=>{
+      const f=FL[i];
+      cpMap[f]={hl:b.querySelector('.cp-hl').value,body:b.querySelector('.cp-body').value,cta:b.querySelector('.cp-cta').value};
+    });
+
+    const placement=document.getElementById('f-placement').value;
+    const wk='W'+weekNum();
+    S.ads=[];
+    let idx=0;
+
+    markets.forEach(market=>{
+      funnels.forEach(funnel=>{
+        const auds=audiences.length?audiences:['General'];
+        auds.forEach(audience=>{
+          const cr=cMap[funnel]||{name:'Asset_'+funnel,url:''};
+          const cp=cpMap[funnel]||{hl:'',body:'',cta:'Learn More'};
+          S.ads.push({
+            id:'ad_'+idx++,
+            adSetName:`${wk}_${market}_${funnel}_${audience.replace(/\s+/g,'_')}`,
+            adName:`${wk}_${market}_${funnel}_${audience.replace(/\s+/g,'_')}_${cr.name.split('.')[0]}`,
+            funnel,market,audience,
+            creativeName:cr.name,creativeUrl:cr.url,
+            headline:cp.hl,body:cp.body,cta:cp.cta,
+            placement,
+            status:'pending',checked:false,
+          });
+        });
+      });
+    });
+
+    const count=S.ads.length;
+    document.getElementById('pending-badge').textContent=count;
+    document.getElementById('pending-badge').style.display='';
+    document.getElementById('ad-count-chip').textContent=count+' ads staged';
+    spin.style.display='none';txt.textContent='Build campaign structure →';
+    goTo('preview');
+  },1000);
+}
+
+// ─── Preview ───────────────────────────────────────────────────
+function renderPreview(){
+  const total=S.ads.length,approved=S.ads.filter(a=>a.status==='approved').length;
+  const pending=S.ads.filter(a=>a.status==='pending').length,rejected=S.ads.filter(a=>a.status==='rejected').length;
+
+  document.getElementById('summary-row').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total ads</div><div class="stat-value">${total}</div><div class="stat-sub">across all ad sets</div></div>
+    <div class="stat-card"><div class="stat-label">Approved</div><div class="stat-value" style="color:#16a34a">${approved}</div><div class="stat-sub">ready to push</div></div>
+    <div class="stat-card"><div class="stat-label">Pending review</div><div class="stat-value" style="color:#b45309">${pending}</div><div class="stat-sub">awaiting decision</div></div>
+    <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-value" style="color:#dc2626">${rejected}</div><div class="stat-sub">will not push</div></div>`;
+
+  renderTable();
+}
+
+function renderTable(){
+  const f=S.filter;
+  const filtered=S.ads.filter(a=>{
+    if(f==='all') return true;
+    if(['pending','approved','rejected'].includes(f)) return a.status===f;
+    return a.funnel===f;
+  });
+  const body=document.getElementById('table-body');
+  body.innerHTML=filtered.length===0
+    ? `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);font-size:13px">No ads match this filter</td></tr>`
+    : filtered.map(ad=>{
+      const icon=CREATIVES_ICONS[ad.id.split('_')[1]%5];
+      const nameShort=ad.adName.length>36?ad.adName.substring(0,36)+'…':ad.adName;
+      return `<tr>
+        <td><input type="checkbox" ${ad.checked?'checked':''} onchange="toggleCheck('${ad.id}',this)"/></td>
+        <td>
+          <div class="ad-cell-creative">
+            <div class="creative-icon">${icon}</div>
+            <div>
+              <div class="ad-name-main" title="${ad.adName}">${nameShort}</div>
+              <div class="ad-name-copy">${ad.headline||'—'}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="badge ${BADGE_FUNNEL[ad.funnel]}">${FUNNEL_LABELS[ad.funnel]}</span></td>
+        <td>${FLAGS[ad.market]||''} ${ad.market}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${ad.audience}</td>
+        <td style="font-size:11px;color:var(--text-muted)">${ad.placement.split('(')[0].trim()}</td>
+        <td><span class="badge badge-${ad.status}">${{pending:'⏳ Pending',approved:'✓ Approved',rejected:'✕ Rejected'}[ad.status]}</span></td>
+        <td>
+          <div class="flex gap-8">
+            <button class="btn btn-xs btn-approve" onclick="setStatus('${ad.id}','approved')">✓</button>
+            <button class="btn btn-xs btn-reject" onclick="setStatus('${ad.id}','rejected')">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+  document.getElementById('sel-count').textContent=S.ads.filter(a=>a.checked).length;
+}
+
+function setStatus(id,status){S.ads.find(a=>a.id===id).status=status;renderPreview();}
+function toggleCheck(id,el){S.ads.find(a=>a.id===id).checked=el.checked;document.getElementById('sel-count').textContent=S.ads.filter(a=>a.checked).length;}
+function toggleAllChecks(el){S.ads.forEach(a=>a.checked=el.checked);renderTable();}
+function selectAll(){S.ads.forEach(a=>a.checked=true);renderTable();}
+function deselectAll(){S.ads.forEach(a=>a.checked=false);renderTable();}
+function bulkApprove(){S.ads.filter(a=>a.checked).forEach(a=>a.status='approved');renderPreview();}
+function bulkReject(){S.ads.filter(a=>a.checked).forEach(a=>a.status='rejected');renderPreview();}
+function setFilter(el,f){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');S.filter=f;renderTable();
+}
+
+// ─── Push ──────────────────────────────────────────────────────
+// ─── Push ──────────────────────────────────────────────────────
+async function proceedToPush(){
+  const approved=S.ads.filter(a=>a.status==='approved');
+  if(!approved.length){alert('Approve at least one ad before pushing.');return;}
+
+  const payload=buildPayload(approved);
+
+  // Pre-push validation
+  try{
+    const valRes=await fetch('/api/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const val=await valRes.json();
+    if(!val.valid){alert('Cannot push — fix these errors:\n\n'+val.errors.join('\n'));return;}
+    if(val.warnings?.length){
+      const ok=confirm('Warnings before push:\n\n'+val.warnings.join('\n')+'\n\nProceed anyway?');
+      if(!ok) return;
+    }
+  }catch(e){console.warn('Validation endpoint unreachable:',e.message);}
+
+  goTo('push');
+  runPush(payload);
+}
+
+function buildPayload(approvedAds){
+  return {
+    campaignName:document.getElementById('f-campaign-name').value,
+    objective:document.getElementById('f-objective').value,
+    startDate:document.getElementById('f-start-date').value,
+    destinationUrl:document.getElementById('f-url').value,
+    utmSource:document.getElementById('f-utm').value,
+    pixelId:document.getElementById('f-pixel').value,
+    ads:approvedAds,
+  };
+}
+
+function log(type,msg){
+  const el=document.getElementById('push-log');
+  const ts=new Date().toTimeString().split(' ')[0];
+  el.innerHTML+=`<div class="log-line"><span class="log-ts">${ts}</span><span class="log-${type}">${msg}</span></div>`;
+  el.scrollTop=el.scrollHeight;
+}
+function setProgress(label,pct){
+  document.getElementById('prog-label').textContent=label;
+  document.getElementById('prog-pct').textContent=Math.round(pct)+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+async function runPush(payload){
+  const total=payload.ads.length;
+  let succeeded=0,errors=0;
+  log('info','◼ Connecting to Meta Marketing API…');
+  setProgress('Starting push…',2);
+
+  try{
+    const res=await fetch('/api/push',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+    });
+
+    if(!res.ok){
+      const e=await res.json().catch(()=>({error:'Server error '+res.status}));
+      log('err','✕ '+(e.error||'Push request failed'));
+      if(e.errors) e.errors.forEach(m=>log('err','  '+m));
+      setProgress('Push failed',0);
+      return;
+    }
+
+    const reader=res.body.getReader();
+    const decoder=new TextDecoder();
+    let buf='';
+    let adsetsDone=0,adsDone=0,assetsDone=0;
+
+    while(true){
+      const{done,value}=await reader.read();
+      if(done) break;
+      buf+=decoder.decode(value,{stream:true});
+      const lines=buf.split('\n');
+      buf=lines.pop();
+
+      for(const line of lines){
+        const t=line.trim();
+        if(!t) continue;
+        let evt;try{evt=JSON.parse(t);}catch{continue;}
+
+        switch(evt.type){
+          case 'start':
+            log('info','◼ Campaign: '+evt.campaignName+' — '+evt.total+' ads');
+            (evt.warnings||[]).forEach(w=>log('err','⚠ '+w));
+            break;
+          case 'campaign':
+            log('ok','✓ Campaign created — '+evt.id);
+            setProgress('Campaign created',8);
+            break;
+          case 'asset':
+            assetsDone++;
+            log('ok','✓ Asset "'+evt.name+'" — '+(evt.hash||evt.videoId||'uploaded'));
+            setProgress('Uploading assets…',8+assetsDone*4);
+            break;
+          case 'adset':
+            adsetsDone++;
+            log('ok','✓ Ad set: '+evt.name);
+            setProgress('Creating ad sets…',25+(adsetsDone/total)*35);
+            break;
+          case 'ad':
+            adsDone++;succeeded++;
+            const n=evt.name?.length>55?evt.name.substring(0,55)+'…':evt.name;
+            log('ok','✓ Ad: '+n);
+            setProgress('Creating ads…',60+(adsDone/total)*35);
+            break;
+          case 'error':
+            errors++;
+            log('err',(evt.recoverable?'⚠':'✕')+' '+evt.message);
+            break;
+          case 'fatal':
+            log('err','✕ FATAL: '+evt.message);
+            if(evt.hint) log('info','  → '+evt.hint);
+            break;
+          case 'done':
+            setProgress('Complete ✓',100);
+            log('info','─────────────────────────────────────');
+            if(evt.aborted){
+              log('err','✕ Push aborted — check errors above');
+            }else{
+              log('ok','✓ Done — '+evt.succeeded+' ads created in Meta Ads Manager (PAUSED)');
+              log('info','◼ Set budgets and activate in Ads Manager to go live');
+            }
+            if(evt.errors>0) log('err','⚠ '+evt.errors+' error(s) — review above');
+
+            document.getElementById('push-title').textContent=evt.aborted?'Push failed':'Campaign live 🎉';
+            document.getElementById('push-sub').textContent=evt.aborted
+              ?'Check the log above. Verify your Meta credentials in Settings.'
+              :'Ads created in Meta Ads Manager (PAUSED). Set budgets there to activate.';
+
+            document.getElementById('result-grid').innerHTML=`
+              <div class="result-card"><div class="result-num green">${evt.succeeded??succeeded}</div><div class="result-lbl">Ads created</div></div>
+              <div class="result-card"><div class="result-num amber">${evt.errors??errors}</div><div class="result-lbl">Errors</div></div>
+              <div class="result-card"><div class="result-num blue">${evt.total??total}</div><div class="result-lbl">Total</div></div>`;
+            document.getElementById('result-grid').style.display='grid';
+            document.getElementById('push-done-btns').style.display='flex';
+            document.getElementById('pending-badge').style.display='none';
+            fetchHistory();
+            break;
+        }
+      }
+    }
+  }catch(e){
+    log('err','✕ Network error: '+e.message);
+    log('info','  Ensure the Vercel deployment is live and ENV vars are configured.');
+    setProgress('Push failed',0);
+  }
+}
+
+// ─── History (fetches from /api/history) ───────────────────────
+async function renderHistory(){
+  await fetchHistory();
+}
+async function fetchHistory(){
+  const cont=document.getElementById('history-list');
+  if(!cont) return;
+  cont.innerHTML=`<div class="empty-state"><div class="empty-icon" style="font-size:20px">⏳</div><div class="empty-sub">Loading…</div></div>`;
+  try{
+    const res=await fetch('/api/history?limit=20');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const{records}=await res.json();
+    if(!records?.length){
+      cont.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No pushes yet</div><div class="empty-sub">Complete your first campaign brief to see history here</div></div>`;
+      return;
+    }
+    cont.innerHTML=records.map(h=>`
+      <div class="history-row">
+        <div>
+          <div class="history-id">${h.campaignId||h.campId||'—'}</div>
+          <div class="history-meta">${(h.markets||[]).join(', ')||h.markets||'—'} — ${(h.funnels||[]).join(', ')||h.funnels||'—'} — ${h.total} ads</div>
+          <div class="history-date">${h.date?new Date(h.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</div>
+        </div>
+        <div class="flex gap-8 items-center">
+          <span class="badge badge-approved">✓ ${h.succeeded??h.total-h.errors} live</span>
+          ${h.errors>0?`<span class="badge badge-pending">⚠ ${h.errors} errors</span>`:''}
+        </div>
+      </div>`).join('');
+  }catch(e){
+    cont.innerHTML=`<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load history</div><div class="empty-sub">API unreachable — ${e.message}</div></div>`;
+  }
+}
+
+// ─── Settings ──────────────────────────────────────────────────
+function saveSettings(){
+  // In production, credentials live in Vercel ENV vars — this UI is for reference only
+  document.getElementById('acct-display').textContent=document.getElementById('s-acct').value||'—';
+  const btn=event.target;
+  btn.textContent='Saved ✓ (update Vercel ENV vars to persist)';
+  setTimeout(()=>btn.textContent='Save credentials',3000);
+}
+</script>
+</body>
+</html>
