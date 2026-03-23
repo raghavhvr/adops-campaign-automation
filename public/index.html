@@ -537,10 +537,6 @@ input[type=checkbox]{accent-color:var(--cornflower);width:15px;height:15px;curso
             <label>UTM source</label>
             <input type="text" id="f-utm" placeholder="meta_paid" value="meta_paid"/>
           </div>
-          <div class="field">
-            <label>Meta Pixel ID</label>
-            <input type="text" id="f-pixel" placeholder="1234567890" value="9876543210"/>
-          </div>
         </div>
       </div>
 
@@ -1094,7 +1090,6 @@ function buildPayload(approvedAds){
     startDate:document.getElementById('f-start-date').value,
     destinationUrl:document.getElementById('f-url').value,
     utmSource:document.getElementById('f-utm').value,
-    pixelId:document.getElementById('f-pixel').value,
     ads:approvedAds,
   };
 }

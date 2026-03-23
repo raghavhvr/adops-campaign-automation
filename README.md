@@ -65,8 +65,7 @@ In **Vercel Dashboard → Your Project → Settings → Environment Variables**,
 |---|---|---|
 | `META_ACCESS_TOKEN` | Your System User token | Never commit this |
 | `META_AD_ACCOUNT_ID` | `act_XXXXXXXXXX` | Include the `act_` prefix |
-| `META_API_VERSION` | `v20.0` | Update when Meta releases new versions |
-| `META_PIXEL_ID` | Your pixel ID | Numeric string |
+| `META_API_VERSION` | `v25.0` | Update when Meta releases new versions |
 
 Or add them via CLI:
 
@@ -74,7 +73,6 @@ Or add them via CLI:
 vercel env add META_ACCESS_TOKEN
 vercel env add META_AD_ACCOUNT_ID
 vercel env add META_API_VERSION
-vercel env add META_PIXEL_ID
 ```
 
 ### 5. Deploy
